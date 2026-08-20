@@ -34,18 +34,21 @@ let
   fastFloat = fetch locks.libplaceboFastFloat "fast-float";
 
   patchedSource = pkgs.runCommand "${pname}-patched-source-${version}" { } ''
-    cp -r ${src} $out
-    chmod -R 777 $out
+    cp -r ${src} src
+    chmod -R u+w src
 
     for dir in glad jinja markupsafe fast_float; do
-      rm -rf $out/3rdparty/$dir
-      mkdir -p $out/3rdparty/$dir
+      rm -rf src/3rdparty/$dir
+      mkdir -p src/3rdparty/$dir
     done
-    cp -r ${glad}/* $out/3rdparty/glad/
-    cp -r ${jinja}/* $out/3rdparty/jinja/
-    cp -r ${markupsafe}/* $out/3rdparty/markupsafe/
-    cp -r ${fastFloat}/* $out/3rdparty/fast_float/
-    chmod -R 777 $out
+    cp -r ${glad}/* src/3rdparty/glad/
+    cp -r ${jinja}/* src/3rdparty/jinja/
+    cp -r ${markupsafe}/* src/3rdparty/markupsafe/
+    cp -r ${fastFloat}/* src/3rdparty/fast_float/
+
+    # Copy rather than move: `cp` applies the umask, and nix rejects a
+    # world-writable build output ("suspicious ownership or permission").
+    cp -r src $out
   '';
 in
 
@@ -68,8 +71,8 @@ pkgs.stdenvNoCC.mkDerivation {
       --native-file ${nativeFile} \
       --cross-file ${crossFile} \
       --prefix=$out \
-      `# mpv only needs the OpenGL renderer here; everything else would drag`
-      `# in Vulkan/Direct3D/shader-compiler toolchains we do not ship.` \
+      `# mpv only needs the OpenGL renderer here; everything else would` \
+      `# drag in Vulkan/Direct3D/shader-compiler toolchains we do not ship.` \
       -Dopengl=enabled \
       -Dgl-proc-addr=disabled \
       -Dvulkan=disabled \
