@@ -1,0 +1,29 @@
+--- a/meson.build
++++ b/meson.build
+@@ -416,8 +416,13 @@
+     path_source += files('osdep/path-mac.m')
+     sources += files('osdep/language-mac.c',
+                      'osdep/utils-mac.c',
+-                     'osdep/mac/app_bridge.m',
+-                     'player/clipboard/clipboard-mac.m')
++                     'osdep/mac/app_bridge.m')
++    # clipboard-mac.m is written against the Swift bridge header
++    # (osdep/mac/swift.h), which only exists when swift-build is enabled,
++    # and unlike app_bridge.m it has no HAVE_SWIFT guard.
++    if get_option('swift-build').allowed()
++        sources += files('player/clipboard/clipboard-mac.m')
++    endif
+     main_fn_source = files('osdep/main-fn-mac.c')
+ endif
+ 
+--- a/player/clipboard/clipboard.c
++++ b/player/clipboard/clipboard.c
+@@ -39,7 +39,7 @@
+ #if HAVE_WIN32_DESKTOP
+     &clipboard_backend_win32,
+ #endif
+-#if HAVE_COCOA
++#if HAVE_COCOA && HAVE_SWIFT
+     &clipboard_backend_mac,
+ #endif
+ #if HAVE_WAYLAND && HAVE_WAYLAND_PROTOCOLS_1_39

@@ -49,6 +49,7 @@ let
     cd $src
     patch -p1 <${../../../patches/mpv-fix-missing-objc.patch}
     patch -p1 <${../../../patches/mpv-audiounit-shared-session.patch}
+    patch -p1 <${../../../patches/mpv-cocoa-without-swift.patch}
     cd -
 
     cp -r $src $out
