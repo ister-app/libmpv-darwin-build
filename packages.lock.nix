@@ -71,6 +71,11 @@
     url = "https://github.com/pallets/markupsafe/archive/297fc8e356e6836a62087949245d09a28e9f1b13.tar.gz";
     sha256 = "da7c010c9c81a66ac73036558c1fcb6212b50482f43211cd1254035b94f82414";
   };
+  libplaceboVulkanHeaders = {
+    version = "450bd223";
+    url = "https://github.com/KhronosGroup/Vulkan-Headers/archive/450bd2232225d6c7728a4108055ac2e37cef6475.tar.gz";
+    sha256 = "26df9841c30806a994e2fdf42f7c87bcb1ced9db9a06033469123939fb3fa075";
+  };
   libplaceboFastFloat = {
     version = "97b54ca9";
     url = "https://github.com/fastfloat/fast_float/archive/97b54ca9e75f5303507699d27c6b4f4efe4641a1.tar.gz";

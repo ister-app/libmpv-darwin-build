@@ -32,12 +32,15 @@ let
   jinja = fetch locks.libplaceboJinja "jinja";
   markupsafe = fetch locks.libplaceboMarkupsafe "markupsafe";
   fastFloat = fetch locks.libplaceboFastFloat "fast-float";
+  # Needed even with -Dvulkan=disabled: src/vulkan/stubs.c and the public
+  # libplacebo/vulkan.h include <vulkan/vulkan.h> unconditionally.
+  vulkanHeaders = fetch locks.libplaceboVulkanHeaders "vulkan-headers";
 
   patchedSource = pkgs.runCommand "${pname}-patched-source-${version}" { } ''
     cp -r ${src} src
     chmod -R u+w src
 
-    for dir in glad jinja markupsafe fast_float; do
+    for dir in glad jinja markupsafe fast_float Vulkan-Headers; do
       rm -rf src/3rdparty/$dir
       mkdir -p src/3rdparty/$dir
     done
@@ -45,6 +48,7 @@ let
     cp -r ${jinja}/* src/3rdparty/jinja/
     cp -r ${markupsafe}/* src/3rdparty/markupsafe/
     cp -r ${fastFloat}/* src/3rdparty/fast_float/
+    cp -r ${vulkanHeaders}/* src/3rdparty/Vulkan-Headers/
 
     # Copy rather than move: `cp` applies the umask, and nix rejects a
     # world-writable build output ("suspicious ownership or permission").
