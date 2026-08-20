@@ -14,6 +14,8 @@ let
   nativeFile = callPackage ../../utils/native-file/default.nix { };
   crossFile = callPackage ../../utils/cross-file/default.nix { };
   xctoolchainInstallNameTool = callPackage ../../utils/xctoolchain/install-name-tool.nix { };
+  # meson's install step rewrites rpaths on darwin and shells out to otool.
+  xctoolchainOtool = callPackage ../../utils/xctoolchain/otool.nix { };
 
   pname = import ../../utils/name/package.nix name;
   fetch =
@@ -69,6 +71,7 @@ pkgs.stdenvNoCC.mkDerivation {
     pkgs.pkg-config
     pkgs.python3
     xctoolchainInstallNameTool
+    xctoolchainOtool
   ];
   configurePhase = ''
     meson setup build $src \
