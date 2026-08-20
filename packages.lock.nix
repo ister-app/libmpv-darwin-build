@@ -5,9 +5,9 @@
     sha256 = "a4003623cdc0109dec3aac8435520aa3fb12c4d69454fa227f2658cdb6dab5fa";
   };
   ffmpeg = {
-    version = "6.0";
-    url = "https://ffmpeg.org/releases/ffmpeg-6.0.tar.xz";
-    sha256 = "57be87c22d9b49c112b6d24bc67d42508660e6b718b3db89c44e47e289137082";
+    version = "9.0.1";
+    url = "https://ffmpeg.org/releases/ffmpeg-9.0.1.tar.xz";
+    sha256 = "cf38e0e28c7e5605942c4a77755349b0145804a397af37eb1fb4c77cb237f635";
   };
   fftools-ffi = {
     version = "9b0d4da0";
@@ -49,6 +49,33 @@
     url = "https://wrapdb.mesonbuild.com/v2/libpng_1.6.40-1/get_patch";
     sha256 = "bad558070e0a82faa5c0ae553bcd12d49021fc4b628f232a8e58c3fbd281aae1";
   };
+  libplacebo = {
+    version = "7.360.1";
+    url = "https://github.com/haasn/libplacebo/archive/refs/tags/v7.360.1.tar.gz";
+    sha256 = "d05fdf90bea2f629eaa2d115e909fd356388ac639e54f77b87a018a6d76224bd";
+  };
+  # libplacebo keeps these as git submodules; the release tarball has none of
+  # them, so they are fetched separately and copied into 3rdparty/.
+  libplaceboGlad = {
+    version = "73db193f";
+    url = "https://github.com/Dav1dde/glad/archive/73db193f853e2ee079bf3ca8a64aa2eaf6459043.tar.gz";
+    sha256 = "33dbeae44d8315ece57e14eba4b1b4a02ac5406d1c4f49cd20048c91522a6b9a";
+  };
+  libplaceboJinja = {
+    version = "15206881";
+    url = "https://github.com/pallets/jinja/archive/15206881c006c79667fe5154fe80c01c65410679.tar.gz";
+    sha256 = "b88a20dcc2e34072fcf4159325bc6c34cd4b29a81a8b83d15d2f28ba561da296";
+  };
+  libplaceboMarkupsafe = {
+    version = "297fc8e3";
+    url = "https://github.com/pallets/markupsafe/archive/297fc8e356e6836a62087949245d09a28e9f1b13.tar.gz";
+    sha256 = "da7c010c9c81a66ac73036558c1fcb6212b50482f43211cd1254035b94f82414";
+  };
+  libplaceboFastFloat = {
+    version = "97b54ca9";
+    url = "https://github.com/fastfloat/fast_float/archive/97b54ca9e75f5303507699d27c6b4f4efe4641a1.tar.gz";
+    sha256 = "2b132274539286e41f37857cac22aa8441d21bd86d55de825a3342b149f66801";
+  };
   libvorbis = {
     version = "1.3.7";
     url = "https://github.com/xiph/vorbis/releases/download/v1.3.7/libvorbis-1.3.7.tar.gz";
@@ -75,9 +102,9 @@
     sha256 = "a420fcf7103e54e775c383e3751729b8fb2dcd087f6165befd13f28315f754f5";
   };
   mpv = {
-    version = "0.36.0";
-    url = "https://github.com/mpv-player/mpv/archive/refs/tags/v0.36.0.tar.gz";
-    sha256 = "29abc44f8ebee013bb2f9fe14d80b30db19b534c679056e4851ceadf5a5e8bf6";
+    version = "0.41.0";
+    url = "https://github.com/mpv-player/mpv/archive/refs/tags/v0.41.0.tar.gz";
+    sha256 = "ee21092a5ee427353392360929dc64645c54479aefdb5babc5cfbb5fad626209";
   };
   uchardet = {
     version = "0.0.8";
