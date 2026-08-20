@@ -18,11 +18,28 @@ let
     name = "${pname}-source-${version}";
     inherit (packageLock) url sha256;
   };
-  patchedSource = pkgs.runCommand "${pname}-patched-source-${version}" { } ''
-    mkdir -p $out/subprojects/mbedtls
-    cp -r ${src}/* $out/subprojects/mbedtls/
-    cp ${./meson.build} $out/meson.build
-  '';
+  patchedSource =
+    pkgs.runCommand "${pname}-patched-source-${version}"
+      { nativeBuildInputs = [ pkgs.python3 ]; }
+      ''
+        mkdir -p $out/subprojects/mbedtls
+        cp -r ${src}/* $out/subprojects/mbedtls/
+        chmod -R u+w $out/subprojects/mbedtls
+        cp ${./meson.build} $out/meson.build
+
+        # ffmpeg >= 7 calls psa_crypto_init() on every TLS connection, and mpv
+        # opens the playlist, the subtitle rendition and the segments from
+        # several threads at once. PSA's global init is only thread-safe with
+        # MBEDTLS_THREADING_C (see docs/architecture/psa-thread-safety), which
+        # the default config ships commented out; without it the concurrent
+        # init double-frees inside the entropy code.
+        python3 $out/subprojects/mbedtls/scripts/config.py \
+          -f $out/subprojects/mbedtls/include/mbedtls/mbedtls_config.h \
+          set MBEDTLS_THREADING_C
+        python3 $out/subprojects/mbedtls/scripts/config.py \
+          -f $out/subprojects/mbedtls/include/mbedtls/mbedtls_config.h \
+          set MBEDTLS_THREADING_PTHREAD
+      '';
 in
 
 pkgs.stdenvNoCC.mkDerivation {
