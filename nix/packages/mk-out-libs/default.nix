@@ -38,7 +38,6 @@ if arch != archs.universal then
     ffmpeg = callPackage ../mk-pkg-ffmpeg/default.nix { };
     libplacebo = callPackage ../mk-pkg-libplacebo/default.nix { };
     mbedtls = callPackage ../mk-pkg-mbedtls/default.nix { };
-    fftoolsFfi = callPackage ../mk-pkg-fftools-ffi/default.nix { };
     libvorbis = callPackage ../mk-pkg-libvorbis/default.nix { };
     libogg = callPackage ../mk-pkg-libogg/default.nix { };
     dav1d = callPackage ../mk-pkg-dav1d/default.nix { };
@@ -67,7 +66,9 @@ if arch != archs.universal then
         libpng
       ]
       ++ pkgs.lib.optionals (flavor == flavors.encodersgpl) [
-        fftoolsFfi
+        # fftools-ffi is left out: its newest revision (moffatman/fftools-ffi
+        # 9b0d4da0) is written against the ffmpeg 6 API and does not compile
+        # against 9 (av_stream_new_side_data and friends are gone).
         libvorbis
         libogg
       ]
