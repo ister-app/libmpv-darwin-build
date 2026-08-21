@@ -49,6 +49,12 @@ All dependency versions live in `packages.lock.nix` (url + hex sha256 of the tar
   the Swift bridge header without a `HAVE_SWIFT` guard. `patches/mpv-cocoa-without-swift.patch`
   drops that backend. Turning cocoa off instead is not an option — `videotoolbox-gl` requires
   `gl-cocoa`, so it would cost hardware decoding interop.
+- **…and it links but crashes without the call-site guards.** `app_bridge.m` only defines the
+  `cocoa_*` app-bridge functions under `HAVE_SWIFT`, while `player/main.c` and `input/input.c`
+  call them under `HAVE_COCOA` alone; the missing symbols link as `-undefined dynamic_lookup`
+  imports that resolve to NULL, so the first `mpv_create()` segfaults at address 0. The same
+  patch guards those call sites with `HAVE_COCOA && HAVE_SWIFT` (v0.8.2). After a version bump,
+  check the built dylib for new dynamic-lookup imports (`nm`/otool: ordinal `DYNAMIC_LOOKUP`).
 - **mbedtls must be built with `MBEDTLS_THREADING_C`** (`mk-pkg-mbedtls` sets it through
   `scripts/config.py`). ffmpeg ≥ 7 calls `psa_crypto_init()` on *every* TLS connection and mpv
   opens playlist, subtitles and segments concurrently; mbedtls only makes that init thread-safe
