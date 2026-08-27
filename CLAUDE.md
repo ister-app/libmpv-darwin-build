@@ -65,3 +65,13 @@ All dependency versions live in `packages.lock.nix` (url + hex sha256 of the tar
   ships without it.
 - Patches that upstream has since fixed were dropped: the HLS `cur_init_section` reset, the DASH
   base-URL escaping and the VP9 VideoToolbox decoder registration are all in ffmpeg 9.
+- **`iossimulator` is a third os, not a flag on `ios`.** `oses.nix` lists it separately,
+  `targets/pkgs.nix` builds it twice (arm64 + amd64) and `mk-out-xcframeworks` merges those
+  slices into the *same* xcframework as the device build. Any per-os option block in
+  `mk-pkg-*` that only tests `== oses.ios` therefore silently skips the simulator, which then
+  falls back to whatever `DISABLE_ALL_OPTIONS` said. That shipped a simulator libmpv with no
+  audio output at all through v0.8.2 (`-Daudiounit=disabled` never re-enabled): mpv logged
+  "Could not open/initialize audio device -> no sound" and an audio-only file free-ran to EOF,
+  because audio was its only clock. Video hid it — `plain-gl` is a `COMMON_VIDEO` option and
+  applies to every os. When adding an option, decide explicitly whether the simulator wants it
+  (`ios-gl` does not: there is no hardware decoding to interop with).

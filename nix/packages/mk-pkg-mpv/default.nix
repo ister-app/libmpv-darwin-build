@@ -260,9 +260,19 @@ pkgs.stdenvNoCC.mkDerivation {
       if [ "${variant}" == "${variants.video}" ]; then
         OPTIONS+=("''${MACOS_VIDEO_OPTIONS[@]}")
       fi
-    elif [ "${os}" == "${oses.ios}" ]; then
+    # iossimulator is an os of its own and ends up in the same xcframework as
+    # ios, so it needs the audio output too. Without IOS_OPTIONS it keeps the
+    # audiounit, coreaudio, openal and sdl2-audio "disabled" from
+    # DISABLE_ALL_OPTIONS and mpv comes up with no ao at all: "Could not
+    # open/initialize audio device -> no sound", and an audio-only file then
+    # free-runs to EOF because audio was its only clock. Video kept working in
+    # the simulator because plain-gl is a COMMON_VIDEO option, which is what hid
+    # this.
+    elif [ "${os}" == "${oses.ios}" ] || [ "${os}" == "${oses.iossimulator}" ]; then
       OPTIONS+=("''${IOS_OPTIONS[@]}")
-      if [ "${variant}" == "${variants.video}" ]; then
+      # ios-gl is VideoToolbox/OpenGL ES interop for hardware decoding, which
+      # the simulator has no use for — device slice only.
+      if [ "${variant}" == "${variants.video}" ] && [ "${os}" == "${oses.ios}" ]; then
         OPTIONS+=("''${IOS_VIDEO_OPTIONS[@]}")
       fi
     fi
