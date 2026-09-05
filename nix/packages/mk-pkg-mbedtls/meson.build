@@ -20,6 +20,10 @@ options.add_cmake_defines({
     'USE_STATIC_MBEDTLS_LIBRARY': false,
     'USE_SHARED_MBEDTLS_LIBRARY': true,
     'LINK_WITH_PTHREAD': true,
+    # Library only: the test suites and demo programs pull in python and the
+    # test framework, and nothing here consumes them.
+    'ENABLE_TESTING': false,
+    'ENABLE_PROGRAMS': false,
 })
 
 mbedtls = cmake.subproject('mbedtls',

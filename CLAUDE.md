@@ -60,6 +60,15 @@ All dependency versions live in `packages.lock.nix` (url + hex sha256 of the tar
   opens playlist, subtitles and segments concurrently; mbedtls only makes that init thread-safe
   behind that option, and without it the process aborts with a double free inside the entropy
   code. `LINK_WITH_PTHREAD` in their CMake only links pthread — it does not enable the option.
+- **mbedtls must be ≥ 3.6, and fetched as the release asset.** 3.4.1 shipped with
+  `MBEDTLS_SSL_PROTO_TLS1_3` off by default, so the Apple builds could only speak TLS 1.2 — the
+  moment the media server's gateway went TLS 1.3-only (2026-09-05) every HLS open on iOS/macOS
+  failed with "Failed to open", while the Dart side (platform TLS) kept working. 3.6 enables
+  TLS 1.3 by default; 4.x is not an option because ffmpeg (9.0.1 and master) still calls
+  `mbedtls_ssl_conf_rng`, which 4.0 removed. Since 3.6 the tree needs the `framework/` submodule
+  (CMake refuses to configure without it and `scripts/config.py` imports from it), and only the
+  `.tar.bz2` on the GitHub releases page bundles it — the `archive/refs/tags` tarball has an
+  empty `framework/` directory.
 - **fftools-ffi does not compile against ffmpeg 9** (it uses `av_stream_new_side_data` and
   friends) and its newest upstream revision is the one pinned here, so the encoders-gpl variant
   ships without it.

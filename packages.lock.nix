@@ -102,9 +102,12 @@
     sha256 = "3727b078c360ec69fa869de14bd6f75d7ee8d36987b071e6928d4720a28df3a6";
   };
   mbedtls = {
-    version = "3.4.1";
-    url = "https://github.com/Mbed-TLS/mbedtls/archive/refs/tags/v3.4.1.tar.gz";
-    sha256 = "a420fcf7103e54e775c383e3751729b8fb2dcd087f6165befd13f28315f754f5";
+    # The release asset, not the GitHub archive: since 3.6 the build needs the
+    # `framework/` submodule (CMake fails without it, scripts/config.py imports
+    # from it), which only the asset on the releases page bundles.
+    version = "3.6.7";
+    url = "https://github.com/Mbed-TLS/mbedtls/releases/download/mbedtls-3.6.7/mbedtls-3.6.7.tar.bz2";
+    sha256 = "a7e8bcbec0e6f761b4af24f25677626b35f762f68eef79c08677a363212d11f6";
   };
   mpv = {
     version = "0.41.0";
